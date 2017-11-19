@@ -1,0 +1,28 @@
+{
+  "name": "Cluster_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "cluster": "^0.7.7",
+    "crypto": "^1.0.1",
+    "fs": "0.0.1-security",
+    "fs-extra": "^4.0.2",
+    "http": "0.0.0",
+    "load-config-file": "^0.3.6",
+    "net": "^1.0.2",
+    "os": "^0.1.1",
+    "path": "^0.12.7",
+    "sleep": "^5.1.1",
+    "stream": "0.0.2",
+    "url": "^0.11.0",
+    "utils": "^0.3.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
