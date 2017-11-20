@@ -1,12 +1,19 @@
-FROM node:boron
+FROM ubuntu:16.04
 
-WORKDIR /usr/src/app
+MAINTAINER Sergey Buklin
 
-COPY package.json package-lock.json ./
+RUN apt-get -y update
 
+RUN apt-get install -y wget curl
+
+USER root
+
+RUN curl -sL https://deb.nodesource.com/setup_7.x | bash -
+RUN apt-get install -y nodejs
+
+ADD . /hl
+WORKDIR /hl
 RUN npm install
-
-COPY . .
 
 EXPOSE 3000
 

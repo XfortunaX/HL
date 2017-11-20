@@ -20,13 +20,13 @@ if (cluster.isMaster) {
   });
 } else {
 
-  const router = new httpServer(config.listen, config.document_root);
-  router._get('*', (req, res) => {
-    res.sendFileOr404(req)
+  const server = new httpServer(config.listen, config.document_root);
+  server._get('*', (req, res) => {
+    res.check(req)
   });
 
-  router._head('*', (req, res) => {
-    res.checkFileOr404(req)
+  server._head('*', (req, res) => {
+    res.check(req)
   });
 
   console.log(`Worker ${process.pid} started`);

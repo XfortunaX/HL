@@ -1,6 +1,7 @@
 const loadConfig = require('load-config-file');
 
 const confParseRegexp = /^(\w+)\s([^\s]+)/mg;
+
 loadConfig.register('.conf', context => {
   const parsedObject = {};
 

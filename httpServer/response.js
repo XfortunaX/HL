@@ -42,7 +42,7 @@ Response.prototype._sendFile = function(fileStat, filePath, ext, method) {
   }
 };
 
-Response.prototype._getFileOr404 = async function({path, method}) {
+Response.prototype.check = async function({path, method}) {
   const indexFileName = '/index.html';
 
   const filePath = pathMod.join(this.serve, path.split('?')[0].replace(/\/\.\./g, ''));
@@ -72,8 +72,6 @@ Response.prototype._getFileOr404 = async function({path, method}) {
   }
 };
 
-Response.prototype.sendFileOr404 = Response.prototype._getFileOr404;
-Response.prototype.checkFileOr404 = Response.prototype._getFileOr404;
 
 Response.prototype.end = function() {
   this.stream.push(null)
