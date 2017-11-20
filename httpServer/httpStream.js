@@ -8,19 +8,20 @@ function HttpStream(options, requestHandler) {
   this.requestHandler = requestHandler;
 }
 
-HttpStream.prototype._transform = function(chunk, encoding, callback) {
-  this.requestBuffer += chunk.toString();
+HttpStream.prototype._transform = function(ch, enc, cb) {
+  this.requestBuffer += ch.toString();
   const headersEndFlag = '\r\n\r\n';
 
-  let foundIndex;
+  let foundIndex = this.requestBuffer.indexOf(headersEndFlag);
 
-  while((foundIndex = this.requestBuffer.indexOf(headersEndFlag)) !== -1) {
+  while(foundIndex !== -1) {
     const requestString = this.requestBuffer.slice(0, foundIndex + headersEndFlag.length);
     this.requestBuffer = this.requestBuffer.slice(foundIndex + headersEndFlag.length);
     this.requestHandler(requestString, this);
+    foundIndex = this.requestBuffer.indexOf(headersEndFlag);
   }
 
-  callback();
+  cb();
 };
 
 util.inherits(HttpStream, Transform);

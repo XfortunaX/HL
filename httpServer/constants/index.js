@@ -1,10 +1,14 @@
 module.exports = {
-  STATUS_CODES: {
+  STATUS: {
     200: 'OK',
     403: 'Forbidden',
     404: 'Not Found',
     405: 'Method Not Allowed'
   },
+  NOT_FOUND: 404,
+  FORBIDDEN: 403,
+  OK: 200,
+  NOT_ALLOWED: 405,
   CONNECTION: 'keep-alive',
   EXTENTIONS: {
     html: "text/html",
@@ -16,9 +20,5 @@ module.exports = {
     js: "application/javascript",
     swf: "application/x-shockwave-flash"
   },
-  SERVER: `Node.js ${process.version} (${process.platform})`,
-  NOT_FOUND: 404,
-  FORBIDDEN: 403,
-  OK: 200,
-  NOT_ALLOWED: 405
+  SERVER: `Node.js ${process.version} (${process.platform})`
 };
