@@ -22,11 +22,11 @@ if (cluster.isMaster) {
 
   const server = new httpServer(config.listen, config.document_root);
   server._get('*', (req, res) => {
-    res.check(req)
+    res.check(req);
   });
 
   server._head('*', (req, res) => {
-    res.check(req)
+    res.check(req);
   });
 
   console.log(`Worker ${process.pid} started`);

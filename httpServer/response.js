@@ -34,7 +34,10 @@ Response.prototype._sendFile = function(fileStat, filePath, ext, method) {
     const fileStream = fs.createReadStream(filePath, { flags: 'r', mode: 0o666 });
 
     fileStream.on('data', chunk => {
-      this.stream.push(chunk)
+      this.stream.push(chunk);
+      if (chunk.length < 65500) {
+        this.stream.push(null);
+      }
     });
 
   } else {
@@ -56,7 +59,7 @@ Response.prototype.check = async function({path, method}) {
         const indexFilePath = pathMod.join(filePath, indexFileName);
         const indexFileStat = await fs.stat(indexFilePath);
         const ext = pathMod.extname(indexFilePath).slice(1);
-        this._sendFile(indexFileStat, indexFilePath, ext, method)
+        this._sendFile(indexFileStat, indexFilePath, ext, method);
       } catch (err) {
         this.setStatus(CONSTANTS.FORBIDDEN);
         this.send();
@@ -80,6 +83,7 @@ Response.prototype.end = function() {
 Response.prototype.send = function() {
   const data = this._createResponseString();
   this.stream.push(data);
+  // this.stream.push(null);
 };
 
 module.exports =  Response;
