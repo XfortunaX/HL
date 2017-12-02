@@ -20,6 +20,7 @@ if (cluster.isMaster) {
   });
 } else {
 
+  // console.log('rtrgt');
   const server = new httpServer(config.listen, config.document_root);
   server.get('*', (req, res) => {
     res.check(req);

@@ -1,10 +1,13 @@
 const pathMod = require('path');
 const fse = require('fs-extra');
 const CONSTANTS = require('../constants/index');
+const cachee = require('../cache');
 
 function Response(stream, serve) {
   this.stream = stream;
   this.serve = serve;
+
+  this.cache = new cachee();
 
   this.data = ``;
   this.status = `200 ${CONSTANTS.STATUS[CONSTANTS.OK]}`;
@@ -31,14 +34,23 @@ Response.prototype.sendFile = function(fileStat, filePath, ext, method) {
   this.setHeader('Content-Length', fileStat.size);
   this.send();
 
+  let self = this;
   if (method === 'GET') {
-    const fileStream = fse.createReadStream(filePath, { flags: 'r', mode: 0o666 });
-    fileStream.on('data', chunk => {
-      this.stream.push(chunk);
-      if (chunk.length < 65500) {
-        this.stream.push(null);
-      }
-    });
+    if (this.cache.check(filePath)) {
+      this.stream.push(this.cache.get(filePath));
+      this.stream.push(null);
+    } else {
+      const fileStream = fse.createReadStream(filePath, {flags: 'r', mode: 0o666});
+      fileStream.on('data', chunk => {
+        this.stream.push(chunk);
+        if (chunk.length < 30000) {
+          self.cache.add(filePath, chunk);
+        }
+        if (chunk.length < 65500) {
+          this.stream.push(null);
+        }
+      });
+    }
   } else {
     this.end();
   }
