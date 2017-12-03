@@ -59,28 +59,35 @@ Response.prototype.sendFile = function(fileStat, filePath, ext, method) {
 Response.prototype.check = async function({path, method}) {
   const indexFileName = '/index.html';
   const filePath = pathMod.join(this.serve, path.split('?')[0].replace(/\/\.\./g, ''));
-  const ext = pathMod.extname(filePath).slice(1);
 
-  try {
-    const stat = await fse.stat(filePath);
-    if (stat.isDirectory()) {
-      try {
-        const indexFilePath = pathMod.join(filePath, indexFileName);
-        const indexFileStat = await fse.stat(indexFilePath);
-        const ext = pathMod.extname(indexFilePath).slice(1);
-        this.sendFile(indexFileStat, indexFilePath, ext, method);
-      } catch (err) {
-        this.setStatus(CONSTANTS.FORBIDDEN);
-        this.send();
-        this.end();
+  if (this.cache.check(path)) {
+    const indexFilePath = pathMod.join(filePath, indexFileName);
+    const indexFileStat = await fse.stat(indexFilePath);
+    const ext = pathMod.extname(indexFilePath).slice(1);
+    this.sendFile(indexFileStat, indexFilePath, ext, method);
+  } else {
+    const ext = pathMod.extname(filePath).slice(1);
+    try {
+      const stat = await fse.stat(filePath);
+      if (stat.isDirectory()) {
+        try {
+          const indexFilePath = pathMod.join(filePath, indexFileName);
+          const indexFileStat = await fse.stat(indexFilePath);
+          const ext = pathMod.extname(indexFilePath).slice(1);
+          this.sendFile(indexFileStat, indexFilePath, ext, method);
+        } catch (err) {
+          this.setStatus(CONSTANTS.FORBIDDEN);
+          this.send();
+          this.end();
+        }
+      } else {
+        this.sendFile(stat, filePath, ext, method);
       }
-    } else {
-      this.sendFile(stat, filePath, ext, method);
+    } catch (err) {
+      this.setStatus(CONSTANTS.NOT_FOUND);
+      this.send();
+      this.end();
     }
-  } catch (err) {
-    this.setStatus(CONSTANTS.NOT_FOUND);
-    this.send();
-    this.end();
   }
 };
 

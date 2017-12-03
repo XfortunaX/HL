@@ -1,11 +1,8 @@
 function Request(str) {
-  let method = str.substr(0, str.indexOf(" "));
-  let start = str.indexOf(method) + method.length + 1;
-  let length = str.lastIndexOf("HTTP") - start - 1;
-  let path = decodeURIComponent(str.substr(start, length));
+  let path_method = str.split(' ', 2);
 
-  this.path = path;
-  this.method = method;
+  this.path = decodeURIComponent(path_method[1]);
+  this.method = path_method[0];
 }
 
 module.exports = Request;

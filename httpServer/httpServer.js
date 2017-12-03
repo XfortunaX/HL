@@ -22,7 +22,7 @@ function HttpServer(port, serve) {
 }
 
 HttpServer.prototype.conListener = function(socket) {
-  socket.setKeepAlive(true, 2);
+  socket.setKeepAlive(true, 10);
   const httpStream = new HttpStream(null, this.handleRequest);
   socket
     .pipe(httpStream)
@@ -39,7 +39,7 @@ HttpServer.prototype.head = function(path, handler) {
 
 HttpServer.prototype.handleRequest = function(reqStr, stream) {
   const request = new Request(reqStr);
-  const response = new Response(stream, this.serve, this.cache);
+  const response = new Response(stream, this.serve);
 
   if (request.method === 'GET') {
     if (!this.routes.getRoutes[request.path]) {
